@@ -126,7 +126,7 @@ var generateVueComponent = function generateVueComponent(Highcharts) {
     props: {
       constructorType: {
         type: String,
-        default: 'chart'
+        "default": 'chart'
       },
       options: {
         type: Object,
@@ -135,7 +135,7 @@ var generateVueComponent = function generateVueComponent(Highcharts) {
       callback: Function,
       updateArgs: {
         type: Array,
-        default: function _default() {
+        "default": function _default() {
           return [true, true];
         }
       },
@@ -144,7 +144,7 @@ var generateVueComponent = function generateVueComponent(Highcharts) {
       },
       deepCopyOnUpdate: {
         type: Boolean,
-        default: true
+        "default": true
       }
     },
     watch: {
@@ -161,8 +161,7 @@ var generateVueComponent = function generateVueComponent(Highcharts) {
       var HC = this.highcharts || Highcharts; // Check wheather the chart configuration object is passed, as well as the constructor is valid
 
       if (this.options && HC[this.constructorType]) {
-        this.chart = HC[this.constructorType](this.$refs.chart, Object(__WEBPACK_IMPORTED_MODULE_0__utils_tools__["a" /* copyObject */])(this.options, true), // Always pass the deep copy when generating a chart. #80
-        this.callback ? this.callback : null);
+        this.build();
       } else {
         !this.options ? console.warn('The "options" parameter was not passed.') : console.warn("'".concat(this.constructorType, "' constructor-type is incorrect. Sometimes this error is caused by the fact, that the corresponding module wasn't imported."));
       }
@@ -171,6 +170,19 @@ var generateVueComponent = function generateVueComponent(Highcharts) {
       // Destroy chart if exists
       if (this.chart) {
         this.chart.destroy();
+      }
+    },
+    methods: {
+      build: function build() {
+        var HC = this.highcharts || Highcharts;
+        this.chart = HC[this.constructorType](this.$refs.chart, Object(__WEBPACK_IMPORTED_MODULE_0__utils_tools__["a" /* copyObject */])(this.options, true), // Always pass the deep copy when generating a chart. #80
+        this.callback ? this.callback : null);
+      },
+      rebuild: function rebuild() {
+        if (this.chart) {
+          this.chart.destroy();
+          this.build();
+        }
       }
     }
   };

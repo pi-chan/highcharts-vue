@@ -41,11 +41,7 @@ const generateVueComponent = function (Highcharts) {
 
       // Check wheather the chart configuration object is passed, as well as the constructor is valid
       if (this.options && HC[this.constructorType]) {
-        this.chart = HC[this.constructorType](
-          this.$refs.chart,
-          copyObject(this.options, true), // Always pass the deep copy when generating a chart. #80
-          this.callback ? this.callback : null
-        )
+        this.build()
       } else {
         (!this.options) ? console.warn('The "options" parameter was not passed.') : console.warn(`'${this.constructorType}' constructor-type is incorrect. Sometimes this error is caused by the fact, that the corresponding module wasn't imported.`)
       }
@@ -55,6 +51,22 @@ const generateVueComponent = function (Highcharts) {
       if (this.chart) {
         this.chart.destroy()
       }
+    },
+    methods: {
+      build: function() {
+        let HC = this.highcharts || Highcharts
+        this.chart = HC[this.constructorType](
+          this.$refs.chart,
+          copyObject(this.options, true), // Always pass the deep copy when generating a chart. #80
+          this.callback ? this.callback : null
+        )
+      },
+      rebuild: function() {
+        if (this.chart) {
+          this.chart.destroy()
+          this.build()
+        }
+      },
     }
   }
 }
